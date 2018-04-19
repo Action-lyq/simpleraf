@@ -15,12 +15,12 @@ class Base extends Controller
     {
         parent::initialize();
 
-        // if (has_login() === false) {
-        //     $this->redirect('admin/control/login', ['callback' => urlencode($this->request->url(true))]);
-        // }
+        if (has_login() === false) {
+            $this->redirect('admin/systemctl.control/login', ['callback' => urlencode($this->request->url(true))]);
+        }
 
-        $this->assign('requestPath', Url::build(strtolower(Request::module().'/'.Request::controller().'/'.Request::action())));
-        $this->assign('requestIndex', Url::build(strtolower(Request::module().'/'.Request::controller().'/index')));
+        $this->assign('requestPath', Url::build(strtolower(Request::module() . '/' . Request::controller() . '/' . Request::action())));
+        $this->assign('requestIndex', Url::build(strtolower(Request::module() . '/' . Request::controller() . '/index')));
     }
 
     /**
