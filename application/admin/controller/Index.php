@@ -11,6 +11,7 @@ class Index extends Controller
 
     public function index()
     {
+        dump($this->view->engine);
         return $this->fetch();
     }
 }
