@@ -1,12 +1,14 @@
 <?php
 Route::domain('admin', function() {
+    // Route::miss('public/miss');
+
     Route::rule('/', 'admin/index/index');
 
-    Route::rule('weuploads', 'admin/base/weuploads');
+    Route::rule('login$', 'admin/systemctl.control/login');
+    Route::rule('login.do$', 'admin/systemctl.control/do_login');
+    Route::rule('logout.do$', 'admin/systemctl.control/do_logout');
 
-    Route::rule('login$', 'admin/control/login');
-    Route::rule('login.do$', 'admin/control/do_login');
-    Route::rule('logout.do$', 'admin/control/do_logout');
+    Route::rule('weuploads', 'admin/base/weuploads');
 
     Route::rule('article$', 'admin/article/index');
     Route::rule('article.add$', 'admin/article/add');
@@ -24,9 +26,4 @@ Route::domain('admin', function() {
 
     Route::rule('contact$', 'admin/contact/index');
     Route::rule('contact.detail$', 'admin/contact/detail');
-
-    Route::domain('www', function() {
-        Route::rule('share-<id>$', 'index/share/detail');
-        Route::rule('cases-<id>$', 'index/cases/detail');
-    });
 });

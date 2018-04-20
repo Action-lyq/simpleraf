@@ -25,6 +25,16 @@
                         <div class="form-group">
                             <input type="password" class="form-control" placeholder="密码" name="password">
                         </div>
+                        <div class="form-group mar-no">
+                            <div class="row">
+                                <div class="col-md-6 mar-btm">
+                                    <img id="captcha" style="cursor: pointer;" class="img-responsive refresh" src="{:url('admin/systemctl.control/captcha')}" title="刷新">
+                                </div>
+                                <div class="col-md-6 mar-btm">
+                                    <input type="text" class="form-control" placeholder="验证码" name="code">
+                                </div>
+                            </div>
+                        </div>
                         <button class="btn btn-primary btn-lg btn-block" id="overlay-btn" data-target="#overlay" type="submit">登 录</button>
                     </form>
                 </div>

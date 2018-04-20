@@ -28,8 +28,8 @@ class Control extends Controller
      */
     public function do_login()
     {
-        $service = \think\facade\App::controller('AdminUsers', 'service');
-        $login = $service->login();
+        $logic = controller('User', 'logic');
+        $login = $logic->login();
         if ($login['code'] === 1) {
             $this->success($login['data']);
         } else {
@@ -51,13 +51,11 @@ class Control extends Controller
     }
 
     /**
-     * 验证码图片
-     * @param  string $id 验证码ID
-     * @return string     验证码图片
+     * 验证码
      */
-    public function captcha($id = "")
+    public function captcha()
     {
-        $captcha = new \think\captcha\Captcha(config('captcha.'));
-        return $captcha->entry($id);
+        $service = controller('Captcha', 'service');
+        return $service->captcha();
     }
 }
