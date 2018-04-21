@@ -18,35 +18,35 @@ class User
     {
         $username = Request::post('username', '', 'trim');
         if ($username === '') {
-            return api_return(-1, '请输入账号');
+            return build_api(-1, '请输入账号');
         }
 
         $password = Request::post('password', '', 'trim');
         if ($password === '') {
-            return api_return(-1, '请输入密码');
+            return build_api(-1, '请输入密码');
         }
         $password = Config::get('salt.admin_pwd').$password;
 
         $captcha = Request::post('captcha', '', 'trim');
         if ($captcha === '') {
-            return api_return(-1, '请输入验证码');
+            return build_api(-1, '请输入验证码');
         }
 
         if (!$this->check($captcha)) {
-            return api_return(-1, '验证码不正确');
+            return build_api(-1, '验证码不正确');
         }
 
-        $user = Db::name('admin_users')->where('username', $username)->find();
+        $user = Db::name('users')->where('username', $username)->find();
 
         if (empty($user)) {
-            return api_return(-1, '账号不存在');
+            return build_api(-1, '账号不存在');
         } else {
             if (password_verify($password, $user['password']) === false) {
-                return api_return(0, '密码错误');
+                return build_api(0, '密码错误');
             }
 
             if (intval($user['status']) !== 1) {
-                return api_return(0, '账号已禁用');
+                return build_api(0, '账号已禁用');
             }
 
             unset($user['password']);
@@ -54,13 +54,13 @@ class User
             Session::set('baseCMF', $user);
 
             if (has_login()) {
-                Db::name('admin_users')->where('username', $username)->setField([
+                Db::name('users')->where('username', $username)->setField([
                     'last_time' => time(),
                     'last_ip' => Request::ip()
                     ]);
-                return api_return(1, '登录成功', Request::post('callback'));
+                return build_api(1, '登录成功', Request::post('callback'));
             } else {
-                return api_return(0, '登录失败');
+                return build_api(0, '登录失败');
             }
         }
     }
@@ -71,7 +71,7 @@ class User
      */
     public function userList()
     {
-        return Db::name('admin_users')->field('password', true)->order('id', 'desc')->paginate();
+        return Db::name('users')->field('password', true)->order('id', 'desc')->paginate();
     }
 
     /**
@@ -82,19 +82,19 @@ class User
         $data = Request::post();
 
         if (trim($data['username']) === '') {
-            return api_return(-1, '请输入用户名');
+            return build_api(-1, '请输入用户名');
         }
 
-        if (Db::name('admin_users')->where('username', trim($data['username']))->find()) {
-            return api_return(-1, '用户名已存在');
+        if (Db::name('users')->where('username', trim($data['username']))->find()) {
+            return build_api(-1, '用户名已存在');
         }
 
         if (trim($data['nickname']) === '') {
-            return api_return(-1, '请输入昵称');
+            return build_api(-1, '请输入昵称');
         }
 
         if (trim($data['password']) === '') {
-            return api_return(-1, '请输入密码');
+            return build_api(-1, '请输入密码');
         }
 
         $data['password'] = password_hash(Config::get('salt.admin_pwd').$data['password'], PASSWORD_DEFAULT);
@@ -104,7 +104,7 @@ class User
 
         Db::startTrans();
 
-        $add = Db::name('admin_users')->insertGetId($data);
+        $add = Db::name('users')->insertGetId($data);
 
         $group_access['uid'] = $add;
         $group_access['group_id'] = $group_id;
@@ -113,11 +113,11 @@ class User
 
         if ($add > 0 && $add_relation > 0) {
             Db::commit();
-            return api_return(1, '添加成功');
+            return build_api(1, '添加成功');
         }
 
         Db::rollback();
-        return api_return(0, '添加失败');
+        return build_api(0, '添加失败');
     }
 
     /**
@@ -128,7 +128,7 @@ class User
         $data = Request::post();
 
         if (trim($data['nickname']) === '') {
-            return api_return(-1, '请输入昵称');
+            return build_api(-1, '请输入昵称');
         }
 
         if (trim($data['password']) === '') {
@@ -142,17 +142,17 @@ class User
 
         Db::startTrans();
 
-        $save = Db::name('admin_users')->update($data);
+        $save = Db::name('users')->update($data);
 
         $save_relation = Db::name(Config::get('auth.auth_group_access'))->where('uid', $data['id'])->setField('group_id', $group_id);
 
         if ($save > 0 || $save_relation >= 0) {
             Db::commit();
-            return api_return(1, '保存成功');
+            return build_api(1, '保存成功');
         }
 
         Db::rollback();
-        return api_return(1, '数据没有改动');
+        return build_api(1, '数据没有改动');
     }
 
     /**
@@ -163,16 +163,16 @@ class User
         $id = Request::param('id/d');
 
         if ($id === 1) {
-            return api_return(0, '禁止删除超级管理员');
+            return build_api(0, '禁止删除超级管理员');
         }
 
-        $delete = Db::name('admin_users')->where('id', $id)->delete();
+        $delete = Db::name('users')->where('id', $id)->delete();
 
         if ($delete > 0) {
-            return api_return(1, '删除成功');
+            return build_api(1, '删除成功');
         }
 
-        return api_return(0, '删除成功');
+        return build_api(0, '删除成功');
     }
 
     /**
@@ -184,10 +184,10 @@ class User
         $status = Request::post('status');
 
         if ($id === 1) {
-            return api_return(0, '禁止操作超级管理员');
+            return build_api(0, '禁止操作超级管理员');
         }
 
-        $update = Db::name('admin_users')->where('id', $id)->setField('status', $status);
+        $update = Db::name('users')->where('id', $id)->setField('status', $status);
 
         return $update !== false;
     }
@@ -197,7 +197,7 @@ class User
      */
     public function getUserById($id)
     {
-        return Db::name('admin_users')
+        return Db::name('users')
                 ->alias('u')
                 ->leftJoin(Config::get('auth.auth_group_access').' g', 'u.id=g.uid')
                 ->field('id,username,nickname,last_time,last_ip,status,group_id')

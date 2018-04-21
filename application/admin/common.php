@@ -9,7 +9,7 @@ use think\facade\Request;
  */
 function has_login()
 {
-    return Session::has('OX');
+    return Session::has('baseCMF');
 }
 
 /**
@@ -19,9 +19,18 @@ function has_login()
  * @param  string  $url  跳转参数
  * @return array        固定格式数组
  */
-function api_return($code = 1, $data = '', $url = '')
+function build_api($code = 1, $data = '', $url = '')
 {
-    return ['code' => $code, 'data' => $data, $url => $url];
+    return ['code' => $code, 'data' => $data, 'url' => $url];
+}
+
+/**
+ * 当前请求路由
+ * @return string 当前请求路由地址
+ */
+function request_route()
+{
+    return strtolower(implode('/', [Request::module(), Request::controller(), Request::action()]));
 }
 
 /**
@@ -36,13 +45,4 @@ function convert_bytes_units($bytes)
     $size_ext = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB', 'BB', 'NB', 'DB'];
     for ($i = 0; $bytes >= 1000 && $i < 12; $i++) $bytes /= 1024;
     return round($bytes, 2) . $size_ext[$i];
-}
-
-/**
- * 当前请求路由
- * @return string 当前请求路由地址
- */
-function request_route()
-{
-    return strtolower(implode('/', [Request::module(), Request::controller(), Request::action()]));
 }

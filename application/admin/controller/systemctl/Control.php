@@ -29,7 +29,9 @@ class Control extends Controller
     public function do_login()
     {
         $logic = controller('User', 'logic');
+
         $login = $logic->login();
+
         if ($login['code'] === 1) {
             $this->success($login['data']);
         } else {
@@ -42,20 +44,15 @@ class Control extends Controller
      */
     public function do_logout()
     {
+        $logic = controller('User', 'logic');
+
+        $login = $logic->logout();
+
         Session::clear();
         if (has_login()) {
             $this->error('退出失败');
         } else {
             $this->success('退出成功');
         }
-    }
-
-    /**
-     * 验证码
-     */
-    public function captcha()
-    {
-        $service = controller('Captcha', 'service');
-        return $service->captcha();
     }
 }
