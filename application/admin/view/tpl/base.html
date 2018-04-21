@@ -12,9 +12,7 @@
 
     {block name="style"}{/block}
 
-    <!-- <link rel="stylesheet" href="/static/index/vendor/icon-awesome/css/font-awesome.min.css"> -->
     <link rel="stylesheet" href="/static/admin/nifty2.9/premium/icon-sets/icons/line-icons/premium-line-icons.min.css">
-    <link rel="stylesheet" href="/static/admin/nifty2.9/premium/icon-sets/icons/solid-icons/premium-solid-icons.min.css">
     {block name="icon"}{/block}
 
     <link rel="stylesheet" href="/static/admin/nifty2.9/css/themes/type-e/theme-mint.min.css">
@@ -182,13 +180,13 @@
                 <div id="page-head">
                     {block name="header"}
                     <div id="page-title">
-                        <h1 class="page-header text-overflow"><?=isset($breadcrumb[1]) ? $breadcrumb[1] : $breadcrumb[0];?></h1>
+                        <h1 class="page-header text-overflow">Blank page</h1>
                     </div>
 
                     <ol class="breadcrumb">
-                        <li><a href="{:url('admin/index/index')}"><i class="fa fa-home"></i></a></li>
-                        <?php if(isset($breadcrumb[1])): ?><li><a href="{$requestIndex}"><?=$breadcrumb[0];?></a></li><?php endif; ?>
-                        <li class="active"><?=isset($breadcrumb[1]) ? $breadcrumb[1] : $breadcrumb[0];?></li>
+                        <li><a href="#"><i class="pli-home"></i></a></li>
+                        <li><a href="#">Pages</a></li>
+                        <li class="active">Blank page</li>
                     </ol>
                     {/block}
                 </div>
@@ -243,30 +241,7 @@
 
                                 <ul id="mainnav-menu" class="list-group">
                                     <li class="list-header">功能列表</li>
-                                    <li class="<?=in_array($requestPath, config('module.index')) ? 'active-link' : ''?>">
-                                        <a href="{:url('admin/index/index')}">
-                                            <i class="pli-home"></i>
-                                            <span class="menu-title">首页</span>
-                                        </a>
-                                    </li>
-                                    <li class="<?=in_array($requestPath, config('module.article')) ? 'active-link' : ''?>">
-                                        <a href="{:url('admin/article/index')}">
-                                            <i class="pli-gear"></i>
-                                            <span class="menu-title">文章管理</span>
-                                        </a>
-                                    </li>
-                                    <li class="<?=in_array($requestPath, config('module.contact')) ? 'active-link' : ''?>">
-                                        <a href="{:url('admin/contact/index')}">
-                                            <i class="pli-gear"></i>
-                                            <span class="menu-title">留言管理</span>
-                                        </a>
-                                    </li>
-                                    <li class="<?=in_array($requestPath, config('module.cases')) ? 'active-link' : ''?>">
-                                        <a href="{:url('admin/cases/index')}">
-                                            <i class="pli-gear"></i>
-                                            <span class="menu-title">案例管理</span>
-                                        </a>
-                                    </li>
+                                    <?=$mainnav;?>
                                 </ul>
                             </div>
                             <div class="nano-pane">

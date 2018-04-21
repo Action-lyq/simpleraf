@@ -2,9 +2,9 @@
 layer.config({offset: '50px', anim: 5});
 
 $(function() {
-    var mm = $("#mainnav-menu .active-link").parentsUntil('#mainnav-menu');
-    mm.filter('li').addClass('active');
-    mm.filter('ul').addClass('in').attr('aria-expanded', 'true');
+    // var mm = $("#mainnav-menu .active-link").parentsUntil('#mainnav-menu');
+    // mm.filter('li').addClass('active');
+    // mm.filter('ul').addClass('in').attr('aria-expanded', 'true');
     // 初始化ajax动画
     var overlay = $("[data-overlay]");
     var overlayHTML =   '<div id="overlay-' + overlay.data('overlay') + '" class="overlay">' +
