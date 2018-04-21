@@ -9,6 +9,7 @@
 
     <link rel="stylesheet" href="/static/admin/nifty2.9/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/admin/nifty2.9/css/nifty.min.css">
+    <link rel="stylesheet" href="/static/admin/nifty2.9/css/custom.css">
 </head>
 <body>
     <div id="container" class="cls-container">
@@ -18,7 +19,8 @@
                     <div class="mar-ver pad-btm">
                         <h1 class="h3">登录 BaseCMF</h1>
                     </div>
-                    <form id="overlay">
+                    <form data-overlay="1">
+                        <input type="hidden" name="callback">
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="用户名" autofocus name="username">
                         </div>
@@ -31,11 +33,11 @@
                                     <img id="captcha" style="cursor: pointer;" class="img-responsive refresh" src="{:url('admin/systemctl.control/captcha')}" title="刷新">
                                 </div>
                                 <div class="col-md-6 mar-btm">
-                                    <input type="text" class="form-control" placeholder="验证码" name="code">
+                                    <input type="text" class="form-control" placeholder="验证码" name="captcha">
                                 </div>
                             </div>
                         </div>
-                        <button class="btn btn-primary btn-lg btn-block" id="overlay-btn" data-target="#overlay" type="submit">登 录</button>
+                        <button class="btn btn-primary btn-lg btn-block" type="submit">登 录</button>
                     </form>
                 </div>
             </div>
@@ -46,30 +48,26 @@
     <script src="/static/admin/nifty2.9/js/bootstrap.min.js"></script>
     <script src="/static/admin/nifty2.9/js/nifty.min.js"></script>
     <script src="/static/common/layer/layer.js"></script>
+    <script src="/static/admin/nifty2.9/js/custom.js"></script>
     <script>
-        // layer默认参数
-        layer.config({offset: 't', anim: 5});
         $(function() {
-            $.ajaxSetup({
-                beforeSend: function() {
-                    $('#overlay-btn').niftyOverlay({}).niftyOverlay('show');
-                },
-                complete: function() {
-                    $('#overlay-btn').niftyOverlay('hide');
-                },
-                type: 'POST',
-                dataType: 'json'
+            $(".refresh").on("click", function(event) {
+                event.preventDefault();
+                $('#captcha').attr("src", "{:url('admin/systemctl.control/captcha')}?" + Math.random());
+                $('[name="captcha"]').val('');
             });
 
             $("form").submit(function(event) {
                 event.preventDefault();
-                $.post("{:url('admin/control/do_login')}", $(this).serialize(), function(response, textStatus, xhr) {
+                $.post("{:url('admin/systemctl.control/do_login')}", $(this).serialize(), function(response, textStatus, xhr) {
                     if (response.code === 1) {
-                        layer.msg(response.msg, {icon: 1, time: 500}, function() {
+                        layer.msg(response.msg, {icon: 1, time: 800}, function() {
                             window.location.href = response.url;
                         });
                     } else {
-                        layer.msg(response.msg, {icon: 2, time: 1500});
+                        layer.msg(response.msg, {icon: 2, time: 800}, function() {
+                            $("#captcha").click();
+                        });
                     }
                 }, 'json');
             });

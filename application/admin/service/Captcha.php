@@ -28,10 +28,6 @@ class Captcha
     public function check($code = '')
     {
         $captcha = new CaptchaClass(Config::get('captcha.'));
-        if (!$captcha->check($code)) {
-            return false;
-        } else {
-            return true;
-        }
+        return $captcha->check($code);
     }
 }

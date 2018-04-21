@@ -33,9 +33,9 @@ class Control extends Controller
         $login = $logic->login();
 
         if ($login['code'] === 1) {
-            $this->success($login['data']);
+            $this->success($login['msg']);
         } else {
-            $this->error($login['data']);
+            $this->error($login['msg']);
         }
     }
 
@@ -46,13 +46,21 @@ class Control extends Controller
     {
         $logic = controller('User', 'logic');
 
-        $login = $logic->logout();
+        $logout = $logic->logout();
 
-        Session::clear();
-        if (has_login()) {
-            $this->error('退出失败');
+        if ($logout['code'] === 1) {
+            $this->success($logout['msg']);
         } else {
-            $this->success('退出成功');
+            $this->error($logout['msg']);
         }
+    }
+
+    /**
+     * 验证码
+     */
+    public function captcha()
+    {
+        $service = controller('Captcha', 'service');
+        return $service->captcha();
     }
 }

@@ -5,6 +5,7 @@ use think\Db;
 use think\facade\Config;
 use think\facade\Request;
 use think\facade\Session;
+use think\Validate;
 
 /**
 * 用户逻辑
@@ -16,30 +17,34 @@ class User
      */
     public function login()
     {
-        $username = Request::post('username', '', 'trim');
-        if ($username === '') {
-            return build_api(-1, '请输入账号');
+        $validate = Validate::make([
+            'username' => 'require',
+            'password' => 'require',
+            'captcha'  => 'require'
+        ], [
+            'username.require' => '请输入用户名',
+            'password.require' => '请输入密码',
+            'captcha.require'  => '请输入验证码'
+        ]);
+
+        $request = Request::post();
+
+        if (!$validate->check($request)) {
+            return build_api(0, $validate->getError());
         }
 
-        $password = Request::post('password', '', 'trim');
-        if ($password === '') {
-            return build_api(-1, '请输入密码');
-        }
-        $password = Config::get('salt.admin_pwd').$password;
+        $username = $request['username'];
+        $password = Config::get('salt.admin_pwd').$request['password'];
 
-        $captcha = Request::post('captcha', '', 'trim');
-        if ($captcha === '') {
-            return build_api(-1, '请输入验证码');
-        }
-
-        if (!$this->check($captcha)) {
-            return build_api(-1, '验证码不正确');
+        $captcha = $request['captcha'];
+        if (!controller('Captcha', 'service')->check($captcha)) {
+            return build_api(0, '验证码不正确');
         }
 
         $user = Db::name('users')->where('username', $username)->find();
 
         if (empty($user)) {
-            return build_api(-1, '账号不存在');
+            return build_api(0, '账号不存在');
         } else {
             if (password_verify($password, $user['password']) === false) {
                 return build_api(0, '密码错误');
@@ -58,11 +63,21 @@ class User
                     'last_time' => time(),
                     'last_ip' => Request::ip()
                     ]);
-                return build_api(1, '登录成功', Request::post('callback'));
+                return build_api(1, '登录成功', '', Request::post('callback'));
             } else {
                 return build_api(0, '登录失败');
             }
         }
+    }
+
+    public function logout()
+    {
+        Session::clear();
+
+        if (has_login()) {
+            return build_api(0, '退出失败');
+        }
+        return build_api(1, '退出成功');
     }
 
     /**
@@ -82,19 +97,19 @@ class User
         $data = Request::post();
 
         if (trim($data['username']) === '') {
-            return build_api(-1, '请输入用户名');
+            return build_api(0, '请输入用户名');
         }
 
         if (Db::name('users')->where('username', trim($data['username']))->find()) {
-            return build_api(-1, '用户名已存在');
+            return build_api(0, '用户名已存在');
         }
 
         if (trim($data['nickname']) === '') {
-            return build_api(-1, '请输入昵称');
+            return build_api(0, '请输入昵称');
         }
 
         if (trim($data['password']) === '') {
-            return build_api(-1, '请输入密码');
+            return build_api(0, '请输入密码');
         }
 
         $data['password'] = password_hash(Config::get('salt.admin_pwd').$data['password'], PASSWORD_DEFAULT);
@@ -128,7 +143,7 @@ class User
         $data = Request::post();
 
         if (trim($data['nickname']) === '') {
-            return build_api(-1, '请输入昵称');
+            return build_api(0, '请输入昵称');
         }
 
         if (trim($data['password']) === '') {

@@ -15,13 +15,19 @@ function has_login()
 /**
  * 内部API返回
  * @param  integer $code 错误码
- * @param  string  $data 错误信息
+ * @param  string  $msg  错误信息
+ * @param  string  $data 返回数据
  * @param  string  $url  跳转参数
- * @return array        固定格式数组
+ * @return array         固定格式数组
  */
-function build_api($code = 1, $data = '', $url = '')
+function build_api($code = 1, $msg = '', $data = '', $url = '')
 {
-    return ['code' => $code, 'data' => $data, 'url' => $url];
+    return [
+        'code'=> $code,
+        'msg' => $msg,
+        'data'=> $data,
+        'url' => $url
+    ];
 }
 
 /**
