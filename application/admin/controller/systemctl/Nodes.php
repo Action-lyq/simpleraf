@@ -15,8 +15,6 @@ class Nodes extends \app\admin\controller\Base
     protected function initialize()
     {
         parent::initialize();
-
-        $this->service = \think\facade\App::controller('Rules', 'service');
     }
 
     /**
@@ -24,7 +22,7 @@ class Nodes extends \app\admin\controller\Base
      */
     public function index()
     {
-        $auths = $this->service->getNodes();
+        $auths = controller('Rules', 'service')->getNodes();
         $this->assign('auths', $auths);
 
         return $this->fetch();
@@ -35,7 +33,7 @@ class Nodes extends \app\admin\controller\Base
      */
     public function add()
     {
-        $auths = $this->service->getNodes();
+        $auths = ontroller('Rules', 'service')->getNodes();
         $this->assign('auths', $auths);
 
         return $this->fetch();
@@ -46,7 +44,7 @@ class Nodes extends \app\admin\controller\Base
      */
     public function do_add()
     {
-        $add = $this->service->addNode();
+        $add = ontroller('Rules', 'service')->addNode();
 
         if ($add['code'] === 1) {
             $this->success($add['data']);
@@ -62,10 +60,10 @@ class Nodes extends \app\admin\controller\Base
     {
         $id = Request::param('id/d');
 
-        $auths = $this->service->getNodes();
+        $auths = ontroller('Rules', 'service')->getNodes();
         $this->assign('auths', $auths);
 
-        $node = $this->service->getNodeById($id);
+        $node = ontroller('Rules', 'service')->getNodeById($id);
         $this->assign('node', $node);
 
         return $this->fetch();
@@ -76,7 +74,7 @@ class Nodes extends \app\admin\controller\Base
      */
     public function do_edit()
     {
-        $edit = $this->service->editNode();
+        $edit = ontroller('Rules', 'service')->editNode();
 
         if ($edit['code'] === 1) {
             $this->success($edit['data']);
@@ -90,7 +88,7 @@ class Nodes extends \app\admin\controller\Base
      */
     public function do_delete()
     {
-        $delete = $this->service->deleteNode();
+        $delete = ontroller('Rules', 'service')->deleteNode();
 
         if ($delete['code'] === 1) {
             $this->success($delete['data']);
@@ -104,7 +102,7 @@ class Nodes extends \app\admin\controller\Base
      */
     public function update_status()
     {
-        $status = $this->service->toggleStatus();
+        $status = ontroller('Rules', 'service')->toggleStatus();
 
         if (is_bool($status)) {
             if ($status) {
@@ -116,6 +114,4 @@ class Nodes extends \app\admin\controller\Base
             $this->error('失败', null, $status['data']);
         }
     }
-
-
 }

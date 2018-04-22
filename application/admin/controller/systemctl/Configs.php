@@ -10,13 +10,9 @@ use think\facade\Request;
 */
 class Configs extends \app\admin\controller\Base
 {
-    private $service;
-
     protected function initialize()
     {
         parent::initialize();
-        
-        $this->service = \think\facade\App::controller('Configs', 'service');
     }
 
     /**
@@ -24,7 +20,7 @@ class Configs extends \app\admin\controller\Base
      */
     public function index()
     {
-        $configs = $this->service->getConfigs();
+        $configs = controller('Configs', 'service')->getConfigs();
         $this->assign('configs', $configs);
 
         return $this->fetch();
@@ -35,7 +31,7 @@ class Configs extends \app\admin\controller\Base
      */
     public function save_configs()
     {
-        $save = $this->service->saveConfigs();
+        $save = controller('Configs', 'service')->saveConfigs();
 
         if ($save['code'] === 1) {
             $this->success($save['data']);
@@ -56,7 +52,7 @@ class Configs extends \app\admin\controller\Base
             'title' => $data['title'],
             'body' => $data['body'],
             'altbody' => $data['body']
-            ]);
+        ]);
 
         if ($send === true) {
             $this->success('发送成功');

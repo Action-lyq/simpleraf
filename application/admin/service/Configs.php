@@ -14,7 +14,7 @@ class Configs
      */
     public function getConfigs()
     {
-        return Db::name('admin_configs')->column('config_value', 'config_name');
+        return Db::name('configs')->column('config_value', 'config_name');
     }
 
     /**
@@ -30,7 +30,7 @@ class Configs
 
         $ids = '\''.implode('\',\'', array_keys($data)).'\'';
 
-        $sql = 'UPDATE '.config('datebase.prefix').'admin_configs SET `config_value` = CASE `config_name` ';
+        $sql = 'UPDATE '.config('datebase.prefix').'configs SET `config_value` = CASE `config_name` ';
 
         foreach ($data as $name => $value) {
             $sql .= sprintf("WHEN '%s' THEN '%s' ", $name, $value);
