@@ -1,0 +1,98 @@
+{extend name="tpl:base" /}
+{block name="style"}{/block}
+{block name="script"}
+<script>
+    $(function() {
+        $("form").submit(function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: "{:url('admin/systemctl.nodes/do_add')}",
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.code === 1) {
+                        layer.msg(response.msg, {icon: 1, time: 500}, function() {
+                            location.href = "{:url('admin/systemctl.nodes/index')}";
+                        });
+                    } else {
+                        layer.msg(response.msg, {icon: 2, time: 1500});
+                    }
+                }
+            });
+        });
+    });
+</script>
+{/block}
+{block name="container"}
+<ol class="breadcrumb page-breadcrumb">
+    <li>权限节点</li>
+    <li class="active">添加节点</li>
+</ol>
+
+<div class="row">
+    <div class="col-md-12">
+        <ul class="nav nav-tabs nav-tabs-simple m-b-1">
+            <li><a href="{:url('admin/systemctl.nodes/index')}">列表</a></li>
+            <li class="active"><a>添加</a></li>
+        </ul>
+
+        <div class="panel">
+            <form class="form-horizontal">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-md-1 control-label">名称</label>
+                        <div class="col-md-5">
+                            <input type="text" name="title" value="" placeholder="名称" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-1 control-label">父级</label>
+                        <div class="col-md-5">
+                            <select class="form-control" name="pid">
+                                <option value="0">顶级节点</option>
+                                <optgroup label="子节点">
+                                <?php foreach($auths as $auth): ?>
+                                <option value="<?=$auth['id']?>"><?=($auth['level']>0?'|'.str_repeat('------', $auth['level']):'')?><?=$auth['title']?></option>
+                                <?php endforeach; ?>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-1 control-label">节点</label>
+                        <div class="col-md-5">
+                            <input type="text" name="name" placeholder="module/controller/action" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-1 control-label">状态</label>
+                        <div class="col-md-5">
+                            <label class="custom-control custom-radio radio-inline">
+                                <input type="radio" name="status" class="custom-control-input" value="1" checked>
+                                <span class="custom-control-indicator"></span>
+                                有效
+                            </label>
+                            <label class="custom-control custom-radio radio-inline">
+                                <input type="radio" name="status" class="custom-control-input" value="0">
+                                <span class="custom-control-indicator"></span>
+                                无效
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-5 col-md-offset-1">
+                            <button class="btn btn-primary" type="submit">确定</button>
+                            <button class="btn btn-warning" type="reset">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{/block}

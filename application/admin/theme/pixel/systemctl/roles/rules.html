@@ -1,0 +1,253 @@
+{extend name="tpl:base" /}
+{block name="style"}{/block}
+{block name="script"}
+<script>
+    $(function() {
+        // 保存权限
+        $("form").submit(function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: "{:url('admin/systemctl.roles/save_rules')}",
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.code === 1) {
+                        layer.msg(response.msg, {icon: 1, time: 500}, function() {
+                            location.href = response.url;
+                        });
+                    } else {
+                        layer.msg(response.msg, {icon: 2, time: 1500});
+                    }
+                }
+            });
+        });
+
+        // 全选
+        $("#check-all").on('click', function(event) {
+            var _itemStatus = $(this).prop('checked');
+            var _controlItems = $("#auths").find(':checkbox');
+            if (_itemStatus) {
+                _controlItems.prop('checked', _itemStatus).parent('label').addClass('active');
+            } else {
+                _controlItems.prop('checked', _itemStatus).parent('label').removeClass('active');
+            }
+        });
+        // init
+        var _initRow = $(':checkbox[name]').parent('label').parent('td');
+        $.each(_initRow, function(i, v) {
+            var _status = true;
+            $.each($(v).find(':checkbox'), function(i1, v1) {
+                if ($(v1).prop('checked') === false) {_status = false;}
+            });
+            if (_status) $(v).prev('td').find(':checkbox').prop('checked', _status).parent('label').addClass('active');
+
+            _status = true;
+            $.each($(v).prev('td'), function(i1, v1) {
+                if ($(v1).prop('checked') === false) {_status = false;}
+                var _level = $(v1).find(':checkbox').data('level').toString();
+                var _itemArray = _level.split('-');
+                var _itemLength = _itemArray.length;
+                var _controlItem = '';
+                for (var i = _itemLength - 2; i >= 0; i--) {
+                    _controlItem = '';
+                    for (var j = 0; j <= i; j++) {
+                        if (j === 0) {
+                            _controlItem += _itemArray[j];
+                        } else {
+                            _controlItem += '-' + _itemArray[j];
+                        }
+                    }
+                    checkChoseLevel(_controlItem);
+                }
+                if (_controlItem === '') {checkChoseLevel(_controlItem);}
+            });
+        });
+        // 链表选择
+        $(":checkbox[data-level]").on('click', function(event) {
+            var _level = $(this).data('level').toString();
+            var _itemStatus = $(this).prop('checked');
+            var _controlItems = $(':checkbox[data-level^="'+_level+'-"]');
+            if (_itemStatus) {
+                _controlItems.prop('checked', _itemStatus).parent('label').addClass('active');
+            } else {
+                _controlItems.prop('checked', _itemStatus).parent('label').removeClass('active');
+            }
+
+            var _itemArray = _level.split('-');
+            var _itemLength = _itemArray.length;
+            var _controlItem = '';
+            for (var i = _itemLength - 2; i >= 0; i--) {
+                _controlItem = '';
+                for (var j = 0; j <= i; j++) {
+                    if (j === 0) {
+                        _controlItem += _itemArray[j];
+                    } else {
+                        _controlItem += '-' + _itemArray[j];
+                    }
+                }
+                checkChoseLevel(_controlItem);
+            }
+            if (_controlItem === '') {checkChoseLevel(_controlItem);}
+        });
+        function checkChoseLevel(controlItem) {
+            if (controlItem !== '') {
+                var _controlItems = controlItem + '-';
+                var _status = true;
+                $.each($(':checkbox[data-level^="'+_controlItems+'"]'), function(i, v) {
+                    if ($(this).prop('checked') === false) {_status = false;}
+                });
+                if (_status) {
+                    $(':checkbox[data-level="'+controlItem+'"]').prop('checked', _status).parent('label').addClass('active');
+                } else {
+                    $(':checkbox[data-level="'+controlItem+'"]').prop('checked', _status).parent('label').removeClass('active');
+                }
+            }
+            _status = true;
+            $.each($(".chose-tag"), function(i, v) {
+                if ($(this).prop('checked') === false) {_status = false;}
+            });
+            if (_status) {
+                $("#check-all").prop('checked', _status).parent('label').addClass('active');
+            } else {
+                $("#check-all").prop('checked', _status).parent('label').removeClass('active');
+            }
+        }
+    });
+</script>
+{/block}
+{block name="container"}
+<ol class="breadcrumb page-breadcrumb">
+    <li>权限管理</li>
+    <li class="active">权限分配 : {$groupinfo['title']}</li>
+</ol>
+
+<div class="row">
+    <div class="col-md-12">
+        <ul class="nav nav-tabs nav-tabs-simple m-b-1">
+            <li><a href="{:url('admin/systemctl.roles/index')}">角色列表</a></li>
+            <li class="active"><a>权限分配〔{$groupinfo['title']}〕</a></li>
+        </ul>
+
+        <div class="panel">
+            <form class="form-horizontal">
+                <input type="hidden" name="gid" value="<?=input('param.gid', 0, 'intval')?>">
+
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <td width="240" class="text-warning">节点分组
+                                        <label class="custom-control custom-checkbox pull-right">
+                                            <input type="checkbox" id="check-all" class="custom-control-input">
+                                            <span class="custom-control-indicator"></span>
+                                            全选
+                                        </label>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </thead>
+                            <tbody id="auths">
+                                <?php foreach ($nodes as $k => $n1): ?>
+                                <tr class="active">
+                                    <td width="240">
+                                        <?=$n1['title']?>
+                                        <label class="custom-control custom-checkbox pull-right">
+                                            <input type="checkbox" class="custom-control-input chose-tag" data-level="<?=$k?>">
+                                            <span class="custom-control-indicator"></span>
+                                            全选
+                                        </label>
+                                    </td>
+
+                                    <td>
+                                        <?php if(!empty($n1['children']) && $n1['children'][0]['name']!==''): ?>
+                                            <?php foreach ($n1['children'] as $k2 => $n2): ?>
+                                                <label class="custom-control custom-checkbox checkbox-inline">
+                                                    <input type="checkbox" class="custom-control-input chose-tag" name="nodes[]" value="<?=array_search($n2['name'], $rules)?>" data-level="<?=$k.'-'.$k2?>" <?=(in_array(array_search($n2['name'], $rules), $owned)?'checked':'')?>>
+                                                    <span class="custom-control-indicator"></span>
+                                                    <?=$n2['title'];?>
+                                                </label>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+
+                                <?php if(!empty($n1['children']) && $n1['children'][0]['name']===''): ?>
+                                    <?php foreach ($n1['children'] as $k2 => $n2): ?>
+                                    <tr>
+                                        <td>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <?=$n2['title']?>
+                                            <label class="custom-control custom-checkbox pull-right">
+                                                <input type="checkbox" class="custom-control-input" data-level="<?=$k.'-'.$k2?>">
+                                                <span class="custom-control-indicator"></span>
+                                                全选
+                                            </label>
+                                        </td>
+
+                                        <td>
+                                            <?php if(!empty($n2['children']) && $n2['children'][0]['name']!==''): ?>
+                                                <?php foreach ($n2['children'] as $k3 => $n3): ?>
+                                                    <label class="custom-control custom-checkbox checkbox-inline">
+                                                        <input type="checkbox" class="custom-control-input chose-tag" name="nodes[]" value="<?=array_search($n3['name'], $rules)?>" data-level="<?=$k.'-'.$k2.'-'.$k3?>" <?=(in_array(array_search($n3['name'], $rules), $owned)?'checked':'')?>>
+                                                        <span class="custom-control-indicator"></span>
+                                                        <?=$n3['title'];?>
+                                                    </label>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+
+                                    <?php if(!empty($n2['children']) && $n2['children'][0]['name']===''): ?>
+                                        <?php foreach ($n2['children'] as $k3 => $n3): ?>
+                                        <tr>
+                                            <td>
+                                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <?=$n3['title']?>
+                                                <label class="custom-control custom-checkbox pull-right">
+                                                    <input type="checkbox" class="custom-control-input" data-level="<?=$k.'-'.$k2.'-'.$k3?>">
+                                                    <span class="custom-control-indicator"></span>
+                                                    全选
+                                                </label>
+                                            </td>
+
+                                            <td>
+                                                <?php if(!empty($n3['children']) && $n3['children'][0]['name']!==''): ?>
+                                                    <?php foreach ($n3['children'] as $k4 => $n4): ?>
+                                                        <label class="custom-control custom-checkbox checkbox-inline">
+                                                            <input type="checkbox" class="custom-control-input chose-tag" name="nodes[]" value="<?=array_search($n4['name'], $rules)?>" data-level="<?=$k.'-'.$k2.'-'.$k3.'-'.$k4?>" <?=(in_array(array_search($n4['name'], $rules), $owned)?'checked':'')?>>
+                                                            <span class="custom-control-indicator"></span>
+                                                            <?=$n4['title'];?>
+                                                        </label>
+                                                    <?php endforeach; ?>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+
+                                <?php endforeach; ?>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-5 col-md-offset-1">
+                            <button class="btn btn-primary" type="submit">确定</button>
+                            <button class="btn btn-warning" type="reset">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{/block}

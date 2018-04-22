@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+    <title><?=$title;?> - SimpleRAF</title>
+
+    <!-- Core stylesheets -->
+    <link rel="stylesheet" href="{$assets}/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{$assets}/css/pixeladmin.min.css">
+    <link rel="stylesheet" href="{$assets}/css/widgets.min.css">
+    {block name="style"}{/block}
+
+    <!-- Theme -->
+    <link rel="stylesheet" href="{$assets}/css/themes/white.min.css">
+
+    <!-- Font Icon -->
+    {css href="/static/common/ionicons/css/ionicons.min.css" /}
+    {css href="/static/common/fontawesome/css/font-awesome.min.css" /}
+    <!-- <link rel="stylesheet" href="{$assets}/icons/line-icons/premium-line-icons.min.css"> -->
+    {block name="icon"}{/block}
+
+    <link rel="stylesheet" href="{$assets}/css/app.css">
+</head>
+<body class="px-navbar-fixed">
+    <!-- Nav -->
+    <nav class="px-nav px-nav-left px-nav-fixed">
+        <button type="button" class="px-nav-toggle" data-toggle="px-nav">
+            <span class="px-nav-toggle-arrow"></span>
+            <span class="navbar-toggle-icon"></span>
+            <span class="px-nav-toggle-label font-size-11">关闭</span>
+        </button>
+
+        <ul class="px-nav-content">
+            <li class="px-nav-box p-a-3 b-b-1">
+                <img src="{$assets}/img/1.png" class="pull-xs-left m-r-2 border-round" style="width: 55px; height: 55px;">
+                <div class="font-size-14"><span class="font-weight-light">欢迎, </span><strong><?=session('SRAF.nickname');?></strong></div>
+                <div class="btn-group" style="margin-top: 4px;">
+                    <a href="javascript:;" class="btn btn-xs btn-primary btn-outline"><i class="fa fa-envelope"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-primary btn-outline"><i class="fa fa-user"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-primary btn-outline"><i class="fa fa-cog"></i></a>
+                    <a href="{:url('admin/systemctl.control/do_logout')}" class="btn btn-xs btn-danger btn-outline do-logout"><i class="fa fa-power-off"></i></a>
+                </div>
+            </li>
+
+            <!-- 扩展菜单 -->
+            {$mainnav|raw}
+        </ul>
+    </nav>
+
+    <!-- Navbar -->
+    <nav class="navbar px-navbar">
+        <!-- Header -->
+        <div class="navbar-header">
+            <a class="navbar-brand" href="{:url('admin/index/index')}">
+                <img src="/static/common/logo.svg" style="width: 32px;height: 32px;float: left;margin-top: 8px;margin-right: 8px;display: inline-block;">
+                <?=session('SRAF.nickname');?>
+            </a>
+        </div>
+
+        <!-- Navbar togglers -->
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"><i class="navbar-toggle-icon"></i></button>
+
+        <div class="collapse navbar-collapse" id="navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bookmark m-r-1"></i>分类</a>
+                    <div class="dropdown-multi-column">
+                        <ul class="dropdown-menu dropdown-column col-md-4">
+                            <li class="dropdown-header">标题</li>
+                            <li><a href="javascript:;">设计</a></li>
+                            <li><a href="javascript:;">开发</a></li>
+                            <li><a href="javascript:;">美术</a></li>
+                            <li><a href="javascript:;">管理</a></li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        <img src="/static/common/logo.svg" alt="" class="px-navbar-image">
+                        <span class="hidden-md"><?=session('SRAF.nickname');?></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{:url('admin/index/index')}">个人中心</a></li>
+                        <li><a href="{:url('admin/index/index')}">修改密码</a></li>
+                        <li><a href="{:url('admin/index/index')}">修改头像</a></li>
+                        <li class="divider"></li>
+                        <li><a href="{:url('admin/systemctl.control/do_logout')}" class="do-logout"><i class="dropdown-icon fa fa-power-off"></i> 退出登录</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <div class="px-content">
+        <ol class="breadcrumb page-breadcrumb">
+            {$breadcrumb|raw}
+        </ol>
+        <!-- <div class="page-header">
+            <div class="row">
+                <div class="col-md-4 text-xs-center text-md-left text-nowrap">
+                    <h1>
+                        <span class="text-muted font-weight-light">UI elements</span>
+                    </h1>
+                </div>
+            </div>
+        </div> -->
+        <!-- container -->
+        {block name="container"}{/block}
+    </div>
+
+    <!-- Footer -->
+    <footer class="px-footer px-footer-bottom p-y-1">
+        <span class="text-muted">Copyright © 2017 SimpleRAF LLC. All rights reserved.</span>
+    </footer>
+
+    <!-- Load jQuery -->
+    <script src="/static/common/jquery-3.3.1.min.js"></script>
+
+    <!-- Core scripts -->
+    <script src="{$assets}/js/bootstrap.min.js"></script>
+    <script src="{$assets}/js/pixeladmin.min.js"></script>
+
+    <!-- Layer -->
+    <script src="/static/common/layer/layer.js"></script>
+
+    <!-- foot loader -->
+    {block name="script"}{/block}
+
+    <!-- Your scripts -->
+    <script src="{$assets}/js/app.js"></script>
+</body>
+</html>

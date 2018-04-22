@@ -15,7 +15,7 @@ return [
     // 服务器地址
     'hostname'        => '114.215.24.239',
     // 数据库名
-    'database'        => 'lightbase',
+    'database'        => 'simpleraf',
     // 用户名
     'username'        => 'remote',
     // 密码

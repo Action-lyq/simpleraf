@@ -22,13 +22,11 @@ class Menu
     {
         $this->route = request_route();
         $this->url = Url::build($this->route);
-        dump($this->route);
 
         $pid = Db::name('menu')
             ->where('route', $this->route)
             ->where('is_page', 1)
             ->value('pid');
-        dump($pid);
         if ($pid) {
             $parent_route = Db::name('menu')->where('id', $pid)->value('route');
             $this->parent_url = Url::build($parent_route);
@@ -36,8 +34,6 @@ class Menu
 
         $menus = $this->getMenus();
         $menus = $this->createTree($menus, 0);
-        dump($this->parent_url);
-        dump($menus);
 
         $menu_html = $this->createHTML($menus);
 
@@ -123,60 +119,19 @@ class Menu
     {
         $html = '';
 
-        /*
-        <li class="active-link">
-            <a href="#">
-                <i class="pli-quill-2"></i>
-                <span class="menu-title">Active state</span>
-            </a>
-        </li>
-        <li class="active-sub">
-            <a href="#">
-                <i class="pli-mouse-3"></i>
-                <span class="menu-title">Active State</span>
-                <i class="arrow"></i>
-            </a>
+        /*foreach ($menus as $menu) {
+            $html .= '<li class="' . ($this->url === Url::build($menu['route']) ? 'active' : ($this->parent_url === Url::build($menu['route']) || $this->url === Url::build($menu['route']) ? 'active' : '')) . '">';
 
-            <!--Submenu-->
-            <ul class="collapse in">
-                <li class="active-link"><a href="#">Active link</a></li>
-            </ul>
-        </li>
-        <li>
-            <a href="#">
-                <i class="demo-pli-tactic"></i>
-                <span class="menu-title">Menu Level</span>
-                <i class="arrow"></i>
-            </a>
-
-            <!--Submenu-->
-            <ul class="collapse">
-                <li><a href="#">Second Level Item</a></li>
-                <li>
-                    <a href="#">Third Level<i class="arrow"></i></a>
-
-                    <!--Submenu-->
-                    <ul class="collapse">
-                        <li><a href="#">Third Level Item</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </li>
-         */
-
-        foreach ($menus as $menu) {
-            $html .= '<li class="' . ($this->url === Url::build($menu['route']) ? 'active-link' : '') . '">';
-
-            $html .= '<a href="' . ($menu['has_child'] ? 'javascript:;' : Url::build($menu['route'])) . '">' . ($menu['icon'] === '' ? '' : '<i class="' . $menu['icon'] . '"></i> ') . ($menu['pid'] === 0 ? '<span class="menu-title">' . $menu['title'] . '</span>' : $menu['title']) . ($menu['has_child'] ? '<i class="arrow"></i>' : '') . '</a>';
+            $html .= '<a href="' . ($menu['route'] === '' ? 'javascript:;' : Url::build($menu['route'])) . '">' . ($menu['icon'] === '' ? '' : '<i class="' . $menu['icon'] . '"></i> ') . ($menu['pid'] === 0 ? '<span class="menu-title">' . $menu['title'] . '</span>' : $menu['title']) . ($menu['has_child'] ? '<i class="arrow"></i>' : '') . '</a>';
 
             if ($menu['has_child']) {
                 $html .= '<ul class="collapse">' . $this->createHTML($menu['child']) . '</ul>';
             }
 
             $html .= '</li>';
-        }
+        }*/
 
-        /*foreach ($menus as $menu) {
+        foreach ($menus as $menu) {
             $html .= $menu['has_child'] ? '<li class="px-nav-item px-nav-dropdown">' : '<li class="px-nav-item' . ($this->parent_url === Url::build($menu['route']) || $this->url === Url::build($menu['route']) ? ' active' : '') . '">';
 
             $html .= '<a href="' . ($menu['route'] === '' ? 'javascript:;' : Url::build($menu['route'])) . '">' . ($menu['icon'] === '' ? '' : '<i class="' . $menu['icon'] . '"></i> ') . '<span class="px-nav-label">' . $menu['title'] . '</span></a>';
@@ -186,7 +141,7 @@ class Menu
             }
 
             $html .= '</li>';
-        }*/
+        }
 
         return $html;
     }
@@ -270,5 +225,47 @@ class Menu
     public function getMenuById($id)
     {
         return Db::name('menu')->where('id', $id)->find();
+    }
+
+    /**
+     * 面包屑
+     */
+    public function breadcrumb()
+    {
+        $this->route = request_route();
+
+        $menus = $this->getMenus(true);
+        $c_menu = [];
+
+        foreach ($menus as $menu) {
+            if ($menu['route'] === $this->route) {
+                $c_menu = $menu;
+                break;
+            }
+        }
+
+        $tree = [$c_menu];
+        $this->createBreadcrumb($menus, $c_menu, $tree);
+
+        $html = '';
+        foreach ($tree as $menu) {
+            $html .= '<li' . ($c_menu === $menu ? ' class="active"' : '') . '>' . ($c_menu === $menu ? $menu['title'] : ($menu['route'] === '' ? $menu['title'] : '<a href="' . Url::build($menu['route'] . '">' . $menu['title'] . '</a>'))) . '</li>';
+        }
+        return ['html' => $html, 'title' => $c_menu['title']];
+    }
+
+    /**
+     * 创建面包屑数组
+     */
+    private function createBreadcrumb($menus, $c_menu, &$tree)
+    {
+        foreach ($menus as $menu) {
+            if ($c_menu['pid'] > 0) {
+                if ($menu['id'] === $c_menu['pid']) {
+                    array_unshift($tree, $menu);
+                    $this->createBreadcrumb($menus, $menu, $tree);
+                }
+            }
+        }
     }
 }

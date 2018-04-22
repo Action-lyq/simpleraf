@@ -1,0 +1,99 @@
+{extend name="tpl:base" /}
+{block name="style"}{/block}
+{block name="script"}
+<script>
+    $(function() {
+        $("form").submit(function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: "{:url('admin/systemctl.user/do_edit')}",
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.code === 1) {
+                        layer.msg(response.msg, {icon: 1, time: 800}, function() {
+                            location.href = "{:url('admin/systemctl.user/index')}";
+                        });
+                    } else {
+                        layer.msg(response.msg, {icon: 2, time: 800});
+                    }
+                }
+            });
+        });
+    });
+</script>
+{/block}
+{block name="container"}
+<div class="row">
+    <div class="col-md-12">
+        <ul class="nav nav-tabs nav-tabs-simple m-b-1">
+            <li><a href="{:url('admin/systemctl.user/index')}">列表</a></li>
+            <li class="active"><a>编辑</a></li>
+        </ul>
+
+        <div class="panel">
+            <form class="form-horizontal">
+                <input type="hidden" name="id" value="<?=$edit_user['id'];?>">
+
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-md-1 control-label">用户名</label>
+                        <div class="col-md-5">
+                            <p class="form-control-static"><?=$edit_user['username'];?></p>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-1 control-label">昵称</label>
+                        <div class="col-md-5">
+                            <input type="text" name="nickname" value="<?=$edit_user['nickname'];?>" placeholder="昵称" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-1 control-label">密码</label>
+                        <div class="col-md-5">
+                            <input type="text" name="password" value="" placeholder="密码（不修改留空）" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-1 control-label">角色组</label>
+                        <div class="col-md-5">
+                            <select name="group_id" class="form-control">
+                                <?php foreach ($roles as $role): ?>
+                                <option value="<?=$role['id']?>" <?php if ($edit_user['group_id'] === $role['id']): ?>selected<?php endif; ?>><?=$role['title']?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-1 control-label">状态</label>
+                        <div class="col-md-5">
+                            <label class="custom-control custom-radio radio-inline">
+                                <input type="radio" name="status" class="custom-control-input" value="1" <?=$edit_user['status'] === 1 ? 'checked' : '';?>>
+                                <span class="custom-control-indicator"></span>
+                                正常
+                            </label>
+                            <label class="custom-control custom-radio radio-inline">
+                                <input type="radio" name="status" class="custom-control-input" value="0" <?=$edit_user['status'] === 0 ? 'checked' : '';?>>
+                                <span class="custom-control-indicator"></span>
+                                禁用
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-5 col-md-offset-1">
+                            <button class="btn btn-primary" type="submit">确定</button>
+                            <button class="btn btn-warning" type="reset">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{/block}

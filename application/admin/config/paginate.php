@@ -1,6 +1,6 @@
 <?php
 return [
-    'type'     => '\ox\page\Paginate',
+    'type'     => '\sraf\page\Paginate',
     'var_page' => 'page',
     'list_rows'=> 20,
     'ext_style'=> 'margin:0;',

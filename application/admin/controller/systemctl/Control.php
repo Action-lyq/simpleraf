@@ -5,6 +5,7 @@ use think\Controller;
 use think\Db;
 use think\facade\Session;
 use think\facade\Request;
+use think\facade\Config;
 
 /**
 * 会话控制
@@ -20,6 +21,13 @@ class Control extends Controller
             $this->redirect('admin/index/index');
         }
 
+        if (Config::get('theme.open')) {
+            $assets = '/static/admin/' . Config::get('theme.name') . Config::get('theme.version');
+        } else {
+            $assets = '/static/admin';
+        }
+        $this->assign('assets', $assets);
+
         return $this->fetch();
     }
 
@@ -28,9 +36,9 @@ class Control extends Controller
      */
     public function do_login()
     {
-        $logic = controller('User', 'logic');
+        $service = controller('User', 'service');
 
-        $login = $logic->login();
+        $login = $service->login();
 
         if ($login['code'] === 1) {
             $this->success($login['msg']);
@@ -44,9 +52,9 @@ class Control extends Controller
      */
     public function do_logout()
     {
-        $logic = controller('User', 'logic');
+        $service = controller('User', 'service');
 
-        $logout = $logic->logout();
+        $logout = $service->logout();
 
         if ($logout['code'] === 1) {
             $this->success($logout['msg']);

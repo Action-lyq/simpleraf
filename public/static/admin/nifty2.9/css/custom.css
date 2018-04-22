@@ -7,6 +7,10 @@
     vertical-align: middle;
 }
 
+#mainnav-menu .menu-title {
+    vertical-align: middle;
+}
+
 .overlay-wrap {
     position: relative;
 }
@@ -20,7 +24,7 @@
     text-align: center;
     background-color: rgba(255, 255, 255, 0.45);
 }
-.overlay-wrap .overlay:before {
+.overlay-wrap .overlay::before {
     content: "";
     display: inline-block;
     height: 100%;

@@ -19,7 +19,7 @@ return [
     'module_init'  => [],
     // 操作开始执行
     'action_begin' => [
-        // 'app\\admin\\behavior\\Theme'
+        'app\\admin\\behavior\\Theme'
     ],
     // 视图内容过滤
     'view_filter'  => [],

@@ -28,7 +28,6 @@ class Index extends Base
         ];
 
         $this->assign('config', $config);
-        $this->assign('breadcrumb', ['首页']);
 
         return $this->fetch();
     }

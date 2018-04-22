@@ -1,0 +1,224 @@
+{extend name="tpl:base" /}
+{block name="style"}{/block}
+{block name="script"}
+<script>
+    $(function() {
+        $('#tab-resize-tabs').pxTabResize();
+
+        $("form").submit(function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.code === 1) {
+                        layer.msg(response.msg, {icon: 1, time: 500});
+                    } else {
+                        layer.msg(response.msg, {icon: 2, time: 1500});
+                    }
+                }
+            });
+        });
+    });
+</script>
+{/block}
+{block name="container"}
+<ol class="breadcrumb page-breadcrumb">
+    <li>系统配置</li>
+    <li class="active">列表</li>
+</ol>
+
+<div class="row">
+    <div class="col-md-12">
+        <ul class="nav nav-tabs nav-tabs-simple m-b-1" id="tab-resize-tabs">
+          <li class="active"><a href="#tabs-1" data-toggle="tab">基本配置</a></li>
+          <li><a href="#tabs-2" data-toggle="tab">系统配置</a></li>
+          <li><a href="#tabs-3" data-toggle="tab">安全配置</a></li>
+          <li><a href="#tabs-4" data-toggle="tab">邮件配置</a></li>
+          <li><a href="#tabs-5" data-toggle="tab">邮件测试</a></li>
+          <li><a href="#tabs-6" data-toggle="tab">短信配置</a></li>
+        </ul>
+        <div class="tab-content p-t-0">
+            <div class="tab-pane active" id="tabs-1">
+                <div class="panel">
+                    <form class="form-horizontal" action="{:url('admin/systemctl.configs/save_configs')}">
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label class="col-md-1 control-label">后台开关</label>
+                                <div class="col-md-5">
+                                    <label class="custom-control custom-radio radio-inline">
+                                        <input type="radio" name="backstage_status" class="custom-control-input" value="1" <?=(int)$configs['backstage_status'] === 1 ? 'checked' : '';?>>
+                                        <span class="custom-control-indicator"></span>
+                                        开启
+                                    </label>
+                                    <label class="custom-control custom-radio radio-inline">
+                                        <input type="radio" name="backstage_status" class="custom-control-input" value="0" <?=(int)$configs['backstage_status'] === 0 ? 'checked' : '';?>>
+                                        <span class="custom-control-indicator"></span>
+                                        关闭
+                                    </label>
+                                    <div>
+                                        <small class="text-muted">关闭后除站长外所有人访问不了后台。</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel-footer">
+                            <div class="row">
+                                <div class="col-md-5 col-md-offset-1">
+                                    <button class="btn btn-primary" type="submit">确定</button>
+                                    <button class="btn btn-warning" type="reset">重置</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="tab-pane" id="tabs-2">
+                <div class="panel">
+                    <form class="form-horizontal" action="{:url('admin/systemctl.configs/save_configs')}">
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label class="col-md-1 control-label">后台每页记录数</label>
+                                <div class="col-md-5">
+                                    <input type="text" name="page_num" value="<?=$configs['page_num'];?>" placeholder="后台每页记录数" class="form-control">
+                                    <small class="text-muted">后台数据每页显示记录数。</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel-footer">
+                            <div class="row">
+                                <div class="col-md-5 col-md-offset-1">
+                                    <button class="btn btn-primary" type="submit">确定</button>
+                                    <button class="btn btn-warning" type="reset">重置</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="tab-pane" id="tabs-3">
+                <div class="panel">
+                    <form class="form-horizontal" action="{:url('admin/systemctl.configs/save_configs')}">
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label class="col-md-1 control-label">禁止后台访问IP</label>
+                                <div class="col-md-5">
+                                    <textarea name="ip_blacklist" class="form-control" rows="5" placeholder="例如：1.1.1.1#2.2.2.2"><?=$configs['ip_blacklist'];?></textarea>
+                                    <small class="text-muted">多个用#号分隔，如果不配置表示不限制IP访问。</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel-footer">
+                            <div class="row">
+                                <div class="col-md-5 col-md-offset-1">
+                                    <button class="btn btn-primary" type="submit">确定</button>
+                                    <button class="btn btn-warning" type="reset">重置</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="tab-pane" id="tabs-4">
+                <div class="panel">
+                    <form class="form-horizontal" action="{:url('admin/systemctl.configs/save_configs')}">
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label class="col-md-1 control-label">SMTP服务器</label>
+                                <div class="col-md-5">
+                                    <input type="text" name="smtp_host" value="<?=$configs['smtp_host'];?>" placeholder="SMTP服务器地址" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-1 control-label">SMTP端口号</label>
+                                <div class="col-md-5">
+                                    <input type="text" name="smtp_port" value="<?=$configs['smtp_port'];?>" placeholder="SMTP端口号" class="form-control" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-1 control-label">发件人名称</label>
+                                <div class="col-md-5">
+                                    <input type="text" name="smtp_name" value="<?=$configs['smtp_name'];?>" placeholder="发件人名称" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-1 control-label">发件人邮箱</label>
+                                <div class="col-md-5">
+                                    <input type="text" name="smtp_user" value="<?=$configs['smtp_user'];?>" placeholder="发件人邮箱" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-1 control-label">认证方式</label>
+                                <div class="col-md-5">
+                                    <input type="text" name="smtp_secure" value="<?=$configs['smtp_secure'];?>" placeholder="认证方式" class="form-control" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-1 control-label">邮箱密码</label>
+                                <div class="col-md-5">
+                                    <input type="text" name="smtp_pwd" value="" placeholder="留空则不修改" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel-footer">
+                            <div class="row">
+                                <div class="col-md-5 col-md-offset-1">
+                                    <button class="btn btn-primary" type="submit">确定</button>
+                                    <button class="btn btn-warning" type="reset">重置</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="tab-pane" id="tabs-5">
+                <div class="panel">
+                    <form class="form-horizontal" action="{:url('admin/systemctl.configs/test_smtp')}">
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label class="col-md-1 control-label">收件人</label>
+                                <div class="col-md-5">
+                                    <input type="text" name="receiver" placeholder="收件人" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-1 control-label">邮件标题</label>
+                                <div class="col-md-5">
+                                    <input type="text" name="title" value="这是一封测试邮件" placeholder="邮件标题" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-md-1 control-label">邮件内容</label>
+                                <div class="col-md-5">
+                                    <textarea rows="3" name="body" placeholder="邮件内容" class="form-control">这是一封由系统发出的测试邮件。</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel-footer">
+                            <div class="row">
+                                <div class="col-md-5 col-md-offset-1">
+                                    <button class="btn btn-primary" type="submit">发送测试邮件</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="tab-pane" id="tabs-6">
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

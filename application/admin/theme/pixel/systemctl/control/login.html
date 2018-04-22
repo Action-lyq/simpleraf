@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+    <title>登录 | SimpleRAF</title>
+
+    <link rel="stylesheet" href="{$assets}/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{$assets}/css/pixeladmin.min.css">
+
+    <link rel="stylesheet" href="{$assets}/css/themes/white.min.css">
+
+    <style>
+        .page-signin-container {
+            width: auto;
+            margin: 30px 10px;
+        }
+
+        .page-signin-container form {
+            border: 0;
+            box-shadow: 0 2px 2px rgba(0,0,0,.05), 0 1px 0 rgba(0,0,0,.05);
+        }
+
+        @media (min-width: 544px) {
+            .page-signin-container {
+                width: 350px;
+                margin: 60px auto;
+            }
+        }
+
+        .page-signin-social-btn {
+            width: 40px;
+            padding: 0;
+            line-height: 40px;
+            text-align: center;
+            border: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-signin-container" id="page-signin-form">
+        <h2 class="m-t-0 m-b-4 text-xs-center font-weight-semibold font-size-20">Login SimpleRAF</h2>
+
+        <form class="panel p-a-4">
+            <fieldset class="form-group form-group-lg">
+                <input type="text" class="form-control" placeholder="用户名" name="username" autofocus>
+            </fieldset>
+
+            <fieldset class="form-group form-group-lg">
+                <input type="password" class="form-control" placeholder="密码" name="password">
+            </fieldset>
+
+            <fieldset class="form-group form-group-lg m-b-0">
+                <div class="row">
+                    <div class="col-md-6 m-b-2 text-center">
+                        <img id="captcha" style="cursor: pointer;" class="img-responsive display-inline-block refresh" src="{:url('admin/systemctl.control/captcha')}" title="刷新">
+                    </div>
+                    <div class="col-md-6 m-b-2">
+                        <input type="text" class="form-control" placeholder="验证码" name="captcha">
+                    </div>
+                </div>
+            </fieldset>
+
+            <button type="submit" class="btn btn-block btn-lg btn-primary">登 录</button>
+        </form>
+
+        <h4 class="m-y-3 text-xs-center font-weight-semibold text-muted">or sign in with</h4>
+
+        <div class="text-xs-center">
+            <!-- <a href="index.html" class="page-signin-social-btn btn btn-success btn-rounded" data-toggle="tooltip" title="Facebook"><i class="fa fa-facebook"></i></a>&nbsp;&nbsp;&nbsp;
+            <a href="index.html" class="page-signin-social-btn btn btn-info btn-rounded" data-toggle="tooltip" title="Twitter"><i class="fa fa-twitter"></i></a>&nbsp;&nbsp;&nbsp;
+            <a href="index.html" class="page-signin-social-btn btn btn-danger btn-rounded" data-toggle="tooltip" title="Google+"><i class="fa fa-google-plus"></i></a> -->
+        </div>
+    </div>
+
+    <script src="/static/common/jquery-3.3.1.min.js"></script>
+    <!-- Core scripts -->
+    <script src="{$assets}/js/bootstrap.min.js"></script>
+    <script src="{$assets}/js/pixeladmin.min.js"></script>
+    <script src="/static/common/layer/layer.js"></script>
+    <script src="{$assets}/js/app.js"></script>
+    <script>
+        $(function() {
+            $(".refresh").on("click", function(event) {
+                event.preventDefault();
+                $('#captcha').attr("src", "{:url('admin/systemctl.control/captcha')}?" + Math.random());
+                $('[name="captcha"]').val('');
+            });
+
+            $("form").submit(function(event) {
+                event.preventDefault();
+                $.post("{:url('admin/systemctl.control/do_login')}", $(this).serialize(), function(response, textStatus, xhr) {
+                    if (response.code === 1) {
+                        layer.msg(response.msg, {icon: 1, time: 800}, function() {
+                            window.location.href = response.url;
+                        });
+                    } else {
+                        layer.msg(response.msg, {icon: 2, time: 800}, function() {
+                            $("#captcha").click();
+                        });
+                    }
+                }, 'json');
+            });
+        });
+    </script>
+</body>
+</html>

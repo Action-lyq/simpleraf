@@ -1,0 +1,135 @@
+{extend name="tpl:base" /}
+{block name="style"}{/block}
+{block name="script"}
+<script>
+    $(function() {
+        $("#view-icon-input").keyup(function(event) {
+            $("#view-icon").attr('class', $(this).val());
+        });
+
+        $("form").submit(function(event) {
+            event.preventDefault();
+            $.ajax({
+                url: "{:url('admin/systemctl.menu/do_edit')}",
+                data: $(this).serialize(),
+                success: function(response) {
+                    if (response.code === 1) {
+                        layer.msg(response.msg, {icon: 1, time: 500}, function() {
+                            location.href = "{:url('admin/systemctl.menu/index')}";
+                        });
+                    } else {
+                        layer.msg(response.msg, {icon: 2, time: 1500});
+                    }
+                }
+            });
+        });
+    });
+</script>
+{/block}
+{block name="container"}
+<ol class="breadcrumb page-breadcrumb">
+    <li>系统菜单</li>
+    <li class="active">编辑</li>
+</ol>
+
+<div class="row">
+    <div class="col-md-12">
+        <ul class="nav nav-tabs nav-tabs-simple m-b-1">
+            <li><a href="{:url('admin/systemctl.menu/index')}">列表</a></li>
+            <li class="active"><a>编辑</a></li>
+        </ul>
+
+        <div class="panel">
+            <form class="form-horizontal">
+                <input type="hidden" name="id" value="<?=$edit_menu['id'];?>">
+
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-md-1 control-label">名称</label>
+                        <div class="col-md-5">
+                            <input type="text" name="title" value="<?=$edit_menu['title'];?>" placeholder="菜单名称" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-1 control-label">上级</label>
+                        <div class="col-md-5">
+                            <select name="pid" class="form-control">
+                                <option value="0">顶级菜单</option>
+                                <optgroup label="子级菜单">
+                                    <?php foreach($menus as $menu): ?>
+                                    <option value="{$menu['id']}" <?=$menu['is_page'] ? 'disabled' : '';?> <?=$menu['id'] === $edit_menu['pid'] ? 'selected' : '';?>><?=$menu['level'] > 0 ? '|' . str_repeat('---', $menu['level']) : '';?> <?=$menu['title'];?> 〖<?=$menu['is_page'] ? '隐式页面' : '显式导航';?>〗〖排序:<?=$menu['sort'];?>〗</option>
+                                    <?php endforeach; ?>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-1 control-label">图标</label>
+                        <div class="col-md-4">
+                            <input type="text" name="icon" value="<?=$edit_menu['icon'];?>" placeholder="字体图标 完整类名" class="form-control" id="view-icon-input">
+                        </div>
+                        <div class="col-md-1"><div class="form-control-static"><i id="view-icon"></i></div></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-1 control-label">路由</label>
+                        <div class="col-md-5">
+                            <input type="text" name="route" value="<?=$edit_menu['route'];?>" placeholder="module/controller/action" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-1 control-label">排序</label>
+                        <div class="col-md-5">
+                            <input type="text" name="sort" value="<?=$edit_menu['sort'];?>" placeholder="0" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-1 control-label">功能页面</label>
+                        <div class="col-md-5">
+                            <label class="custom-control custom-radio radio-inline">
+                                <input type="radio" name="is_page" class="custom-control-input" value="0" <?=$edit_menu['is_page'] === 0 ? 'checked' : '';?>>
+                                <span class="custom-control-indicator"></span>
+                                否
+                            </label>
+                            <label class="custom-control custom-radio radio-inline">
+                                <input type="radio" name="is_page" class="custom-control-input" value="1" <?=$edit_menu['is_page'] === 1 ? 'checked' : '';?>>
+                                <span class="custom-control-indicator"></span>
+                                是
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-md-1 control-label">状态</label>
+                        <div class="col-md-5">
+                            <label class="custom-control custom-radio radio-inline">
+                                <input type="radio" name="status" class="custom-control-input" value="1" <?=$edit_menu['status'] === 1 ? 'checked' : '';?>>
+                                <span class="custom-control-indicator"></span>
+                                显示
+                            </label>
+                            <label class="custom-control custom-radio radio-inline">
+                                <input type="radio" name="status" class="custom-control-input" value="0" <?=$edit_menu['status'] === 0 ? 'checked' : '';?>>
+                                <span class="custom-control-indicator"></span>
+                                隐藏
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-footer">
+                    <div class="row">
+                        <div class="col-md-5 col-md-offset-1">
+                            <button class="btn btn-primary" type="submit">确定</button>
+                            <button class="btn btn-warning" type="reset">重置</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{/block}

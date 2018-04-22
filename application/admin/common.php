@@ -9,7 +9,7 @@ use think\facade\Request;
  */
 function has_login()
 {
-    return Session::has('baseCMF');
+    return Session::has('SRAF');
 }
 
 /**
