@@ -10,8 +10,6 @@ use think\facade\Request;
 */
 class Nodes extends \app\admin\controller\Base
 {
-    private $service;
-
     protected function initialize()
     {
         parent::initialize();

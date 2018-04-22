@@ -1,5 +1,6 @@
 <?php
-Route::domain('admin', function() {
+Route::domain('admin', 'admin');
+/*Route::domain('admin', function() {
     // Route::miss('public/miss');
 
     Route::rule('/', 'admin/index/index');
@@ -26,4 +27,4 @@ Route::domain('admin', function() {
 
     Route::rule('contact$', 'admin/contact/index');
     Route::rule('contact.detail$', 'admin/contact/detail');
-});
+});*/

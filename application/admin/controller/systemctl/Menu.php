@@ -10,13 +10,9 @@ use think\facade\Request;
 */
 class Menu extends \app\admin\controller\Base
 {
-    private $service;
-
     protected function initialize()
     {
         parent::initialize();
-
-        $this->service = \think\facade\App::controller('Menu', 'service');
     }
 
     /**
@@ -24,7 +20,7 @@ class Menu extends \app\admin\controller\Base
      */
     public function index()
     {
-        $this->assign('menus', $this->service->all());
+        $this->assign('menus', controller('Menu', 'service')->all());
 
         return $this->fetch();
     }
@@ -34,7 +30,7 @@ class Menu extends \app\admin\controller\Base
      */
     public function add()
     {
-        $this->assign('menus', $this->service->all());
+        $this->assign('menus', controller('Menu', 'service')->all());
 
         return $this->fetch();
     }
@@ -44,7 +40,7 @@ class Menu extends \app\admin\controller\Base
      */
     public function do_add()
     {
-        $add = $this->service->addMenu();
+        $add = controller('Menu', 'service')->addMenu();
 
         if ($add['code'] === 1) {
             $this->success($add['msg']);
@@ -64,11 +60,11 @@ class Menu extends \app\admin\controller\Base
             $this->redirect('admin/systemctl.menu/index');
         }
 
-        $edit_menu = $this->service->getMenuById($id);
+        $edit_menu = controller('Menu', 'service')->getMenuById($id);
 
         $this->assign('edit_menu', $edit_menu);
 
-        $this->assign('menus', $this->service->all());
+        $this->assign('menus', controller('Menu', 'service')->all());
 
         return $this->fetch();
     }
@@ -78,7 +74,7 @@ class Menu extends \app\admin\controller\Base
      */
     public function do_edit()
     {
-        $edit = $this->service->editMenu();
+        $edit = controller('Menu', 'service')->editMenu();
 
         if ($edit['code'] === 1) {
             $this->success($edit['msg']);
@@ -92,7 +88,7 @@ class Menu extends \app\admin\controller\Base
      */
     public function do_delete()
     {
-        $delete = $this->service->deleteMenu();
+        $delete = controller('Menu', 'service')->deleteMenu();
 
         if ($delete['code'] === 1) {
             $this->success($delete['msg']);
@@ -106,7 +102,7 @@ class Menu extends \app\admin\controller\Base
      */
     public function update_status()
     {
-        if ($this->service->toggleStatus()) {
+        if (controller('Menu', 'service')->toggleStatus()) {
             $this->success('成功');
         } else {
             $this->error('失败');

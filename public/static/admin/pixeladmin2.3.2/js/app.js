@@ -5,10 +5,10 @@ $(function() {
     // 全局AJAX配置
     $.ajaxSetup({
         beforeSend: function() {
-            $('form').addClass('form-loading');
+            $('[data-ajax]').addClass('form-loading');
         },
         complete: function() {
-            $('form').removeClass('form-loading');
+            $('[data-ajax]').removeClass('form-loading');
         },
         type: 'POST',
         dataType: 'json'
