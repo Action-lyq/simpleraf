@@ -43,9 +43,9 @@ class Roles extends \app\admin\controller\Base
         $add = controller('Roles', 'service')->addRole();
 
         if ($add['code'] === 1) {
-            $this->success($add['data']);
+            $this->success($add['msg']);
         } else {
-            $this->error($add['data']);
+            $this->error($add['msg']);
         }
     }
 
@@ -71,9 +71,9 @@ class Roles extends \app\admin\controller\Base
         $edit = controller('Roles', 'service')->editRole();
 
         if ($edit['code'] === 1) {
-            $this->success($edit['data']);
+            $this->success($edit['msg']);
         } else {
-            $this->error($edit['data']);
+            $this->error($edit['msg']);
         }
     }
 
@@ -85,9 +85,9 @@ class Roles extends \app\admin\controller\Base
         $delete = controller('Roles', 'service')->deleteRole();
 
         if ($delete['code'] === 1) {
-            $this->success($delete['data']);
+            $this->success($delete['msg']);
         } else {
-            $this->error($delete['data']);
+            $this->error($delete['msg']);
         }
     }
 
@@ -140,9 +140,9 @@ class Roles extends \app\admin\controller\Base
         $save = controller('Roles', 'service')->saveRules();
 
         if ($save['code'] === 1) {
-            $this->success($save['data'], 'admin/systemctl.roles/index');
+            $this->success($save['msg'], 'admin/systemctl.roles/index');
         } else {
-            $this->error($save['data']);
+            $this->error($save['msg']);
         }
     }
 }

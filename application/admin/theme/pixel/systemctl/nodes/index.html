@@ -12,7 +12,7 @@
                 data: {id: id, status: status ? 1 : 0},
                 success: function(response) {
                     if (response.code === 0 && response.data.length > 0) {
-                        layer.msg(response.data, {icon: 2, time: 1500});
+                        layer.msg(response.data, {icon: 2, time: 800});
                     }
                 }
             });
@@ -28,11 +28,11 @@
                     type: 'GET',
                     success: function(response) {
                         if (response.code === 1) {
-                            layer.msg(response.msg, {icon: 1, time: 500}, function() {
+                            layer.msg(response.msg, {icon: 1, time: 800}, function() {
                                 that.parent().parent().remove();
                             });
                         } else {
-                            layer.msg(response.msg, {icon: 2, time: 1500});
+                            layer.msg(response.msg, {icon: 2, time: 800});
                         }
                     }
                 });

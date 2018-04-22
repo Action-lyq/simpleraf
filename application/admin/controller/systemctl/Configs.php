@@ -34,9 +34,9 @@ class Configs extends \app\admin\controller\Base
         $save = controller('Configs', 'service')->saveConfigs();
 
         if ($save['code'] === 1) {
-            $this->success($save['data']);
+            $this->success($save['msg']);
         } else {
-            $this->error($save['data']);
+            $this->error($save['msg']);
         }
     }
 

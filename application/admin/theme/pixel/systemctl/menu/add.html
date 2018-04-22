@@ -14,11 +14,11 @@
                 data: $(this).serialize(),
                 success: function(response) {
                     if (response.code === 1) {
-                        layer.msg(response.msg, {icon: 1, time: 500}, function() {
+                        layer.msg(response.msg, {icon: 1, time: 800}, function() {
                             location.href = "{:url('admin/systemctl.menu/index')}";
                         });
                     } else {
-                        layer.msg(response.msg, {icon: 2, time: 1500});
+                        layer.msg(response.msg, {icon: 2, time: 800});
                     }
                 }
             });

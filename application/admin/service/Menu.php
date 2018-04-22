@@ -167,7 +167,7 @@ class Menu
         $data = Request::post();
 
         if (trim($data['title']) === '') {
-            return api_return(-1, '请输入名称');
+            return build_api(-1, '请输入名称');
         }
 
         $data['level'] = (intval($data['pid']) === 0 ? 0 : Db::name('menu')->where('id', $data['pid'])->value('level') + 1);
@@ -175,10 +175,10 @@ class Menu
         $add = Db::name('menu')->insertGetId($data);
 
         if ($add > 0) {
-            return api_return(1, '添加成功');
+            return build_api(1, '添加成功');
         }
 
-        return api_return(0, '添加失败');
+        return build_api(0, '添加失败');
     }
 
     /**
@@ -189,7 +189,7 @@ class Menu
         $data = Request::post();
 
         if (trim($data['title']) === '') {
-            return api_return(-1, '请输入名称');
+            return build_api(-1, '请输入名称');
         }
 
         $data['level'] = (intval($data['pid']) === 0 ? 0 : Db::name('menu')->where('id', $data['pid'])->value('level') + 1);
@@ -197,10 +197,10 @@ class Menu
         $save = Db::name('menu')->update($data);
 
         if ($save > 0) {
-            return api_return(1, '保存成功');
+            return build_api(1, '保存成功');
         }
 
-        return api_return(0, '保存失败');
+        return build_api(0, '保存失败');
     }
 
     /**
@@ -213,10 +213,10 @@ class Menu
         $delete = Db::name('menu')->where('id', $id)->delete();
 
         if ($delete > 0) {
-            return api_return(1, '删除成功');
+            return build_api(1, '删除成功');
         }
 
-        return api_return(0, '删除成功');
+        return build_api(0, '删除成功');
     }
 
     /**

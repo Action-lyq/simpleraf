@@ -41,9 +41,9 @@ class Configs
         $update = DB::execute($sql);
 
         if ($update === false) {
-            return api_return(0, '更新失败');
+            return build_api(0, '更新失败');
         } else {
-            return api_return(1, '更新成功');
+            return build_api(1, '更新成功');
         }
     }
 }

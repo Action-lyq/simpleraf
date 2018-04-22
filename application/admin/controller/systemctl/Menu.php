@@ -15,7 +15,7 @@ class Menu extends \app\admin\controller\Base
     protected function initialize()
     {
         parent::initialize();
-        
+
         $this->service = \think\facade\App::controller('Menu', 'service');
     }
 
@@ -47,9 +47,9 @@ class Menu extends \app\admin\controller\Base
         $add = $this->service->addMenu();
 
         if ($add['code'] === 1) {
-            $this->success($add['data']);
+            $this->success($add['msg']);
         } else {
-            $this->error($add['data']);
+            $this->error($add['msg']);
         }
     }
 
@@ -81,9 +81,9 @@ class Menu extends \app\admin\controller\Base
         $edit = $this->service->editMenu();
 
         if ($edit['code'] === 1) {
-            $this->success($edit['data']);
+            $this->success($edit['msg']);
         } else {
-            $this->error($edit['data']);
+            $this->error($edit['msg']);
         }
     }
 
@@ -95,9 +95,9 @@ class Menu extends \app\admin\controller\Base
         $delete = $this->service->deleteMenu();
 
         if ($delete['code'] === 1) {
-            $this->success($delete['data']);
+            $this->success($delete['msg']);
         } else {
-            $this->error($delete['data']);
+            $this->error($delete['msg']);
         }
     }
 

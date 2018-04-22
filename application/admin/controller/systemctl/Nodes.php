@@ -47,9 +47,9 @@ class Nodes extends \app\admin\controller\Base
         $add = ontroller('Rules', 'service')->addNode();
 
         if ($add['code'] === 1) {
-            $this->success($add['data']);
+            $this->success($add['msg']);
         } else {
-            $this->error($add['data']);
+            $this->error($add['msg']);
         }
     }
 
@@ -77,9 +77,9 @@ class Nodes extends \app\admin\controller\Base
         $edit = ontroller('Rules', 'service')->editNode();
 
         if ($edit['code'] === 1) {
-            $this->success($edit['data']);
+            $this->success($edit['msg']);
         } else {
-            $this->error($edit['data']);
+            $this->error($edit['msg']);
         }
     }
 
@@ -91,9 +91,9 @@ class Nodes extends \app\admin\controller\Base
         $delete = ontroller('Rules', 'service')->deleteNode();
 
         if ($delete['code'] === 1) {
-            $this->success($delete['data']);
+            $this->success($delete['msg']);
         } else {
-            $this->error($delete['data']);
+            $this->error($delete['msg']);
         }
     }
 
@@ -111,7 +111,7 @@ class Nodes extends \app\admin\controller\Base
                 $this->error('失败');
             }
         } else {
-            $this->error('失败', null, $status['data']);
+            $this->error('失败', null, $status['msg']);
         }
     }
 }

@@ -49,20 +49,20 @@ class Roles
         $data = Request::post();
 
         if (trim($data['title']) === '') {
-            return api_return(-1, '请输入角色名');
+            return build_api(-1, '请输入角色名');
         }
 
         if (Db::name(Config::get('auth.auth_group'))->where('title', trim($data['title']))->find()) {
-            return api_return(-1, '角色名已存在');
+            return build_api(-1, '角色名已存在');
         }
 
         $add = Db::name(Config::get('auth.auth_group'))->insertGetId($data);
 
         if ($add > 0) {
-            return api_return(1, '添加成功');
+            return build_api(1, '添加成功');
         }
 
-        return api_return(0, '添加失败');
+        return build_api(0, '添加失败');
     }
 
     /**
@@ -73,20 +73,20 @@ class Roles
         $data = Request::post();
 
         if (trim($data['title']) === '') {
-            return api_return(-1, '请输入角色名');
+            return build_api(-1, '请输入角色名');
         }
 
         if (Db::name(Config::get('auth.auth_group'))->where('id', '<>', $data['id'])->where('title', trim($data['title']))->find()) {
-            return api_return(-1, '角色名已存在');
+            return build_api(-1, '角色名已存在');
         }
 
         $save = Db::name(Config::get('auth.auth_group'))->update($data);
 
         if ($save > 0) {
-            return api_return(1, '保存成功');
+            return build_api(1, '保存成功');
         }
 
-        return api_return(1, '数据没有改动');
+        return build_api(1, '数据没有改动');
     }
 
     /**
@@ -103,10 +103,10 @@ class Roles
 
         if ($delete_group !== false && $delete_group_access !== false) {
             Db::commit();
-            return api_return(1, '删除成功');
+            return build_api(1, '删除成功');
         } else {
             Db::rollback();
-            return api_return(0, '删除失败');
+            return build_api(0, '删除失败');
         }
     }
 
@@ -126,7 +126,7 @@ class Roles
         $data = Request::post();
 
         if (intval($data['gid']) < 1) {
-            return api_return(-1, '参数错误');
+            return build_api(-1, '参数错误');
         }
 
         $rules = '';
@@ -137,9 +137,9 @@ class Roles
         $save = Db::name(Config::get('auth.auth_group'))->where('id', $data['gid'])->setField('rules', $rules);
 
         if ($save > 0) {
-            return api_return(1, '保存成功');
+            return build_api(1, '保存成功');
         }
 
-        return api_return(1, '数据没有改动');
+        return build_api(1, '数据没有改动');
     }
 }

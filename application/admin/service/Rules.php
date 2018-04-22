@@ -103,10 +103,10 @@ class Rules
         $delete = Db::name(Config::get('auth.auth_rule'))->where('id', $id)->delete();
 
         if ($delete > 0) {
-            return api_return(1, '删除成功');
+            return build_api(1, '删除成功');
         }
 
-        return api_return(0, '删除失败');
+        return build_api(0, '删除失败');
     }
 
     /**
@@ -117,7 +117,7 @@ class Rules
         $data = Request::post();
 
         if (trim($data['title']) === '') {
-            return api_return(-1, '名称不能为空');
+            return build_api(-1, '名称不能为空');
         }
 
         $level = Db::name(Config::get('auth.auth_rule'))->where('id', $data['pid'])->value('level');
@@ -130,10 +130,10 @@ class Rules
         $add = Db::name(Config::get('auth.auth_rule'))->insertGetId($data);
 
         if ($add > 0) {
-            return api_return(1, '添加成功');
+            return build_api(1, '添加成功');
         }
 
-        return api_return(0, '添加失败');
+        return build_api(0, '添加失败');
     }
 
     /**
@@ -144,7 +144,7 @@ class Rules
         $data = Request::post();
 
         if (trim($data['title']) === '') {
-            return api_return(-1, '名称不能为空');
+            return build_api(-1, '名称不能为空');
         }
 
         $level = Db::name(Config::get('auth.auth_rule'))->where('id', $data['pid'])->value('level');
@@ -157,9 +157,9 @@ class Rules
         $save = Db::name(Config::get('auth.auth_rule'))->update($data);
 
         if ($save > 0) {
-            return api_return(1, '保存成功');
+            return build_api(1, '保存成功');
         }
 
-        return api_return(1, '数据没有改动');
+        return build_api(1, '数据没有改动');
     }
 }

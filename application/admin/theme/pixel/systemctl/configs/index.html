@@ -12,9 +12,9 @@
                 data: $(this).serialize(),
                 success: function(response) {
                     if (response.code === 1) {
-                        layer.msg(response.msg, {icon: 1, time: 500});
+                        layer.msg(response.msg, {icon: 1, time: 800});
                     } else {
-                        layer.msg(response.msg, {icon: 2, time: 1500});
+                        layer.msg(response.msg, {icon: 2, time: 800});
                     }
                 }
             });
